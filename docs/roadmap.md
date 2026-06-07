@@ -11,6 +11,7 @@
 ## v0.2
 
 - FastAPI server packaging.
+- Configurable scoring profiles per game mode.
 - Discord webhook integration.
 - More configurable thresholds.
 - Moderation case export format.

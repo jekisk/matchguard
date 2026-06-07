@@ -1,9 +1,11 @@
 from __future__ import annotations
 
 from collections import defaultdict
+from dataclasses import replace
 from math import sqrt
 from typing import Iterable
 
+from matchguard.config import ScoringConfig
 from matchguard.models import Evidence, MatchEvent, RiskReport
 
 
@@ -16,13 +18,24 @@ class RiskScorer:
 
     def __init__(
         self,
-        max_speed_units_per_second: float = 13.0,
-        aim_snap_degrees: float = 70.0,
-        aim_snap_window_seconds: float = 0.25,
+        max_speed_units_per_second: float | None = None,
+        aim_snap_degrees: float | None = None,
+        aim_snap_window_seconds: float | None = None,
+        config: ScoringConfig | None = None,
     ) -> None:
-        self.max_speed = max_speed_units_per_second
-        self.aim_snap_degrees = aim_snap_degrees
-        self.aim_snap_window = aim_snap_window_seconds
+        base_config = config or ScoringConfig()
+        overrides = {}
+        if max_speed_units_per_second is not None:
+            overrides["max_speed_units_per_second"] = max_speed_units_per_second
+        if aim_snap_degrees is not None:
+            overrides["aim_snap_degrees"] = aim_snap_degrees
+        if aim_snap_window_seconds is not None:
+            overrides["aim_snap_window_seconds"] = aim_snap_window_seconds
+
+        self.config = replace(base_config, **overrides) if overrides else base_config
+        self.max_speed = self.config.max_speed_units_per_second
+        self.aim_snap_degrees = self.config.aim_snap_degrees
+        self.aim_snap_window = self.config.aim_snap_window_seconds
 
     def analyze(self, events: Iterable[MatchEvent]) -> list[RiskReport]:
         grouped: dict[tuple[str, str], list[MatchEvent]] = defaultdict(list)
@@ -109,7 +122,7 @@ class RiskScorer:
 
     def _combat_ratio_evidence(self, events: list[MatchEvent]) -> list[Evidence]:
         shot_events = [event for event in events if event.type == "shot"]
-        if len(shot_events) < 8:
+        if len(shot_events) < self.config.min_shots_for_hit_rate:
             return []
 
         hits = [event for event in shot_events if event.payload.get("hit") is True]
@@ -118,7 +131,7 @@ class RiskScorer:
 
         evidence = []
         hit_rate = len(hits) / len(shot_events)
-        if len(shot_events) >= 10 and hit_rate >= 0.85:
+        if hit_rate >= self.config.abnormal_hit_rate:
             evidence.append(
                 Evidence(
                     reason="abnormal_hit_rate",
@@ -128,9 +141,9 @@ class RiskScorer:
                 )
             )
 
-        if len(hits) >= 6:
+        if len(hits) >= self.config.min_hits_for_headshot_rate:
             headshot_rate = len(headshots) / len(hits)
-            if headshot_rate >= 0.75:
+            if headshot_rate >= self.config.abnormal_headshot_rate:
                 evidence.append(
                     Evidence(
                         reason="abnormal_headshot_rate",
@@ -140,7 +153,7 @@ class RiskScorer:
                     )
                 )
 
-        if len(hidden_hits) >= 3:
+        if len(hidden_hits) >= self.config.hidden_hit_count:
             evidence.append(
                 Evidence(
                     reason="repeated_hits_on_hidden_targets",
@@ -162,7 +175,10 @@ class RiskScorer:
         if len(reporters) < 2:
             return []
 
-        weight = min(20, len(reporters) * 5)
+        weight = min(
+            self.config.max_report_weight,
+            len(reporters) * self.config.report_weight_per_reporter,
+        )
         return [
             Evidence(
                 reason="multiple_player_reports",
@@ -181,9 +197,12 @@ class RiskScorer:
         return "monitor"
 
 
-def analyze_events(raw_events: Iterable[dict]) -> list[RiskReport]:
+def analyze_events(
+    raw_events: Iterable[dict],
+    config: ScoringConfig | None = None,
+) -> list[RiskReport]:
     events = [MatchEvent.from_dict(raw) for raw in raw_events]
-    return RiskScorer().analyze(events)
+    return RiskScorer(config=config).analyze(events)
 
 
 def _position(event: MatchEvent) -> tuple[float, float, float] | None:

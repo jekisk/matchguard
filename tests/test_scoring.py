@@ -1,5 +1,6 @@
 import unittest
 
+from matchguard.config import ScoringConfig
 from matchguard.models import MatchEvent
 from matchguard.scoring import RiskScorer, analyze_events
 
@@ -74,6 +75,36 @@ class ScoringTests(unittest.TestCase):
         ]
 
         self.assertEqual(analyze_events(raw_events), [])
+
+    def test_custom_config_can_tune_speed_threshold(self):
+        events = [
+            MatchEvent.from_dict(
+                {
+                    "match_id": "m1",
+                    "player_id": "p1",
+                    "type": "movement",
+                    "ts": 1.0,
+                    "position": {"x": 0, "y": 0, "z": 0},
+                }
+            ),
+            MatchEvent.from_dict(
+                {
+                    "match_id": "m1",
+                    "player_id": "p1",
+                    "type": "movement",
+                    "ts": 2.0,
+                    "position": {"x": 12, "y": 0, "z": 0},
+                }
+            ),
+        ]
+
+        default_reports = RiskScorer().analyze(events)
+        strict_reports = RiskScorer(
+            config=ScoringConfig(max_speed_units_per_second=10.0)
+        ).analyze(events)
+
+        self.assertEqual(default_reports, [])
+        self.assertEqual(strict_reports[0].reasons, ["abnormal_movement_speed"])
 
 
 if __name__ == "__main__":

@@ -1,0 +1,12 @@
+{
+  "max_speed_units_per_second": 10.0,
+  "aim_snap_degrees": 55.0,
+  "aim_snap_window_seconds": 0.2,
+  "min_shots_for_hit_rate": 8,
+  "abnormal_hit_rate": 0.8,
+  "min_hits_for_headshot_rate": 5,
+  "abnormal_headshot_rate": 0.7,
+  "hidden_hit_count": 2,
+  "report_weight_per_reporter": 5,
+  "max_report_weight": 20
+}

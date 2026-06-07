@@ -39,6 +39,12 @@ $env:PYTHONPATH = "src"
 python -m matchguard.cli analyze examples/events/sample_match.jsonl
 ```
 
+Run with a stricter scoring profile:
+
+```powershell
+python -m matchguard.cli analyze examples/events/sample_match.jsonl --config examples/config/strict.json
+```
+
 Or install in editable mode:
 
 ```powershell
