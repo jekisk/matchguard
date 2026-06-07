@@ -1,0 +1,16 @@
+{"match_id":"match-001","player_id":"player-clean","type":"movement","ts":1.0,"position":{"x":0,"y":0,"z":0}}
+{"match_id":"match-001","player_id":"player-clean","type":"movement","ts":2.0,"position":{"x":4,"y":0,"z":0}}
+{"match_id":"match-001","player_id":"player-suspect","type":"movement","ts":1.0,"position":{"x":0,"y":0,"z":0}}
+{"match_id":"match-001","player_id":"player-suspect","type":"movement","ts":1.1,"position":{"x":100,"y":0,"z":0}}
+{"match_id":"match-001","player_id":"player-suspect","type":"shot","ts":2.00,"view_angle":{"yaw":10,"pitch":0},"hit":true,"headshot":true,"target_visible":false}
+{"match_id":"match-001","player_id":"player-suspect","type":"shot","ts":2.10,"view_angle":{"yaw":95,"pitch":2},"hit":true,"headshot":true,"target_visible":false}
+{"match_id":"match-001","player_id":"player-suspect","type":"shot","ts":2.20,"view_angle":{"yaw":180,"pitch":1},"hit":true,"headshot":true,"target_visible":false}
+{"match_id":"match-001","player_id":"player-suspect","type":"shot","ts":2.30,"view_angle":{"yaw":260,"pitch":3},"hit":true,"headshot":true,"target_visible":true}
+{"match_id":"match-001","player_id":"player-suspect","type":"shot","ts":2.40,"view_angle":{"yaw":300,"pitch":2},"hit":true,"headshot":true,"target_visible":true}
+{"match_id":"match-001","player_id":"player-suspect","type":"shot","ts":2.50,"view_angle":{"yaw":320,"pitch":2},"hit":true,"headshot":true,"target_visible":true}
+{"match_id":"match-001","player_id":"player-suspect","type":"shot","ts":2.60,"view_angle":{"yaw":330,"pitch":1},"hit":true,"headshot":true,"target_visible":true}
+{"match_id":"match-001","player_id":"player-suspect","type":"shot","ts":2.70,"view_angle":{"yaw":340,"pitch":1},"hit":true,"headshot":false,"target_visible":true}
+{"match_id":"match-001","player_id":"player-suspect","type":"shot","ts":2.80,"view_angle":{"yaw":350,"pitch":0},"hit":true,"headshot":false,"target_visible":true}
+{"match_id":"match-001","player_id":"player-suspect","type":"shot","ts":2.90,"view_angle":{"yaw":355,"pitch":0},"hit":false,"headshot":false,"target_visible":true}
+{"match_id":"match-001","player_id":"player-suspect","type":"report","ts":3.0,"reporter_id":"player-a","reason":"wallhack"}
+{"match_id":"match-001","player_id":"player-suspect","type":"report","ts":3.1,"reporter_id":"player-b","reason":"aimbot"}

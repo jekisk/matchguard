@@ -1,0 +1,41 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://matchguard.dev/schemas/match_event.schema.json",
+  "title": "MatchGuard Match Event",
+  "type": "object",
+  "required": ["match_id", "player_id", "type", "ts"],
+  "properties": {
+    "match_id": { "type": "string" },
+    "player_id": { "type": "string" },
+    "type": {
+      "type": "string",
+      "enum": ["movement", "shot", "damage", "kill", "visibility", "report"]
+    },
+    "ts": { "type": "number" },
+    "position": {
+      "type": "object",
+      "required": ["x", "y", "z"],
+      "properties": {
+        "x": { "type": "number" },
+        "y": { "type": "number" },
+        "z": { "type": "number" }
+      },
+      "additionalProperties": false
+    },
+    "view_angle": {
+      "type": "object",
+      "required": ["yaw", "pitch"],
+      "properties": {
+        "yaw": { "type": "number" },
+        "pitch": { "type": "number" }
+      },
+      "additionalProperties": false
+    },
+    "hit": { "type": "boolean" },
+    "headshot": { "type": "boolean" },
+    "target_visible": { "type": "boolean" },
+    "reporter_id": { "type": "string" },
+    "reason": { "type": "string" }
+  },
+  "additionalProperties": true
+}
