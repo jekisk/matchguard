@@ -106,6 +106,10 @@ Content-Type: application/json
 
 See [docs/roadmap.md](docs/roadmap.md).
 
+## CLI usage
+
+See [docs/cli.md](docs/cli.md).
+
 ## OpenAI Codex for OSS
 
 This project is structured to be a useful OSS candidate: it has a clear maintainer workflow, tests, examples, documentation, and a realistic path for AI-assisted maintenance.
