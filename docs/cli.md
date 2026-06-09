@@ -21,4 +21,12 @@ python -m matchguard.cli analyze examples/events/sample_match.jsonl --config exa
 python -m matchguard.cli analyze examples/events/sample_match.jsonl --min-score 50
 ```
 
+## Export moderation cases
+
+```powershell
+python -m matchguard.cli export-cases examples/events/sample_match.jsonl --min-score 50
+```
+
+Cases include stable IDs, severity, summaries, recommended actions, and evidence timelines.
+
 The CLI prints JSON so it can be saved by CI jobs, attached to moderation reports, or forwarded into a dashboard prototype.

@@ -45,6 +45,12 @@ Run with a stricter scoring profile:
 python -m matchguard.cli analyze examples/events/sample_match.jsonl --config examples/config/strict.json
 ```
 
+Export moderation cases:
+
+```powershell
+python -m matchguard.cli export-cases examples/events/sample_match.jsonl --min-score 50
+```
+
 Or install in editable mode:
 
 ```powershell

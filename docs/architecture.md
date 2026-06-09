@@ -31,3 +31,5 @@ The first scorer is rule-based and explainable. Each signal adds weighted eviden
 ## Moderator review
 
 MatchGuard should create a queue for humans, not automatic punishments. Future versions can include a web dashboard, replay timestamps, Discord webhooks, and confirmed/false-positive feedback loops.
+
+The moderation case export is the first review-oriented format. It converts risk reports into stable case IDs, severity labels, concise summaries, recommended actions, and ordered evidence timelines.

@@ -12,6 +12,7 @@
 
 - FastAPI server packaging.
 - Configurable scoring profiles per game mode.
+- Moderation case export format.
 - Discord webhook integration.
 - More configurable thresholds.
 - Moderation case export format.

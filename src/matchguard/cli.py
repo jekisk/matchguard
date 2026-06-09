@@ -6,8 +6,10 @@ import sys
 from pathlib import Path
 from typing import Any
 
+from matchguard.cases import build_moderation_cases
 from matchguard.config import ScoringConfig
 from matchguard.models import MatchEvent
+from matchguard.models import RiskReport
 from matchguard.scoring import RiskScorer
 
 
@@ -25,23 +27,55 @@ def main(argv: list[str] | None = None) -> int:
         help="Only print reports at or above this risk score",
     )
 
+    cases_parser = subparsers.add_parser(
+        "export-cases",
+        help="Analyze a JSONL file and export moderation cases",
+    )
+    cases_parser.add_argument("path", type=Path, help="Path to newline-delimited JSON events")
+    cases_parser.add_argument("--config", type=Path, help="Path to a scoring config JSON file")
+    cases_parser.add_argument(
+        "--min-score",
+        type=int,
+        default=1,
+        help="Only export cases at or above this risk score",
+    )
+
     args = parser.parse_args(argv)
     if args.command == "analyze":
         return _analyze(args.path, args.min_score, args.config)
+    if args.command == "export-cases":
+        return _export_cases(args.path, args.min_score, args.config)
 
     parser.error(f"unknown command: {args.command}")
     return 2
 
 
 def _analyze(path: Path, min_score: int, config_path: Path | None) -> int:
-    raw_events = _load_jsonl(path)
-    events = [MatchEvent.from_dict(raw) for raw in raw_events]
-    config = ScoringConfig.from_path(config_path) if config_path else None
-    reports = RiskScorer(config=config).analyze(events)
-    filtered = [report.to_dict() for report in reports if report.risk_score >= min_score]
+    reports = _analyze_reports(path, config_path)
+    filtered = _filter_reports(reports, min_score)
     json.dump({"reports": filtered}, sys.stdout, indent=2)
     sys.stdout.write("\n")
     return 0
+
+
+def _export_cases(path: Path, min_score: int, config_path: Path | None) -> int:
+    reports = _analyze_reports(path, config_path)
+    filtered = [report for report in reports if report.risk_score >= min_score]
+    cases = [case.to_dict() for case in build_moderation_cases(filtered)]
+    json.dump({"cases": cases}, sys.stdout, indent=2)
+    sys.stdout.write("\n")
+    return 0
+
+
+def _analyze_reports(path: Path, config_path: Path | None) -> list[RiskReport]:
+    raw_events = _load_jsonl(path)
+    events = [MatchEvent.from_dict(raw) for raw in raw_events]
+    config = ScoringConfig.from_path(config_path) if config_path else None
+    return RiskScorer(config=config).analyze(events)
+
+
+def _filter_reports(reports: list[RiskReport], min_score: int) -> list[dict[str, Any]]:
+    return [report.to_dict() for report in reports if report.risk_score >= min_score]
 
 
 def _load_jsonl(path: Path) -> list[dict[str, Any]]:
