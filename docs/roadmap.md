@@ -1,6 +1,6 @@
 # Roadmap
 
-## v0.1
+## v0.1 - MVP
 
 - Rule-based Python scoring engine.
 - JSONL analyzer.
@@ -10,12 +10,11 @@
 
 ## v0.2
 
-- FastAPI server packaging.
+- FastAPI server packaging polish.
 - Configurable scoring profiles per game mode.
-- Moderation case export format.
 - Discord webhook integration.
-- More configurable thresholds.
-- Moderation case export format.
+- Additional sample scoring profiles.
+- CLI output options for saved reports.
 - Unreal Engine example.
 
 ## v0.3

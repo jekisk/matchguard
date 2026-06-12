@@ -58,6 +58,27 @@ python -m pip install -e .
 matchguard analyze examples/events/sample_match.jsonl
 ```
 
+## Development
+
+Run the test suite from the repository root:
+
+```powershell
+python -m unittest
+```
+
+Run the same tests with explicit discovery:
+
+```powershell
+python -m unittest discover -s tests
+```
+
+Install developer tools when you want lint checks:
+
+```powershell
+python -m pip install -e ".[dev]"
+python -m ruff check .
+```
+
 ## Event format
 
 Events are newline-delimited JSON objects:

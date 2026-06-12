@@ -41,10 +41,14 @@ def main(argv: list[str] | None = None) -> int:
     )
 
     args = parser.parse_args(argv)
-    if args.command == "analyze":
-        return _analyze(args.path, args.min_score, args.config)
-    if args.command == "export-cases":
-        return _export_cases(args.path, args.min_score, args.config)
+    try:
+        if args.command == "analyze":
+            return _analyze(args.path, args.min_score, args.config)
+        if args.command == "export-cases":
+            return _export_cases(args.path, args.min_score, args.config)
+    except (OSError, ValueError) as exc:
+        sys.stderr.write(f"matchguard: error: {exc}\n")
+        return 1
 
     parser.error(f"unknown command: {args.command}")
     return 2
@@ -68,8 +72,7 @@ def _export_cases(path: Path, min_score: int, config_path: Path | None) -> int:
 
 
 def _analyze_reports(path: Path, config_path: Path | None) -> list[RiskReport]:
-    raw_events = _load_jsonl(path)
-    events = [MatchEvent.from_dict(raw) for raw in raw_events]
+    events = _load_events(path)
     config = ScoringConfig.from_path(config_path) if config_path else None
     return RiskScorer(config=config).analyze(events)
 
@@ -78,7 +81,7 @@ def _filter_reports(reports: list[RiskReport], min_score: int) -> list[dict[str,
     return [report.to_dict() for report in reports if report.risk_score >= min_score]
 
 
-def _load_jsonl(path: Path) -> list[dict[str, Any]]:
+def _load_events(path: Path) -> list[MatchEvent]:
     events = []
     with path.open("r", encoding="utf-8") as handle:
         for line_number, line in enumerate(handle, start=1):
@@ -91,7 +94,10 @@ def _load_jsonl(path: Path) -> list[dict[str, Any]]:
                 raise ValueError(f"{path}:{line_number}: invalid JSON: {exc.msg}") from exc
             if not isinstance(raw, dict):
                 raise ValueError(f"{path}:{line_number}: event must be a JSON object")
-            events.append(raw)
+            try:
+                events.append(MatchEvent.from_dict(raw))
+            except (TypeError, ValueError) as exc:
+                raise ValueError(f"{path}:{line_number}: invalid event: {exc}") from exc
     return events
 
 

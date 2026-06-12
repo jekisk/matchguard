@@ -9,6 +9,12 @@ $env:PYTHONPATH = "src"
 python -m matchguard.cli analyze examples/events/sample_match.jsonl
 ```
 
+After editable installation, you can use the console script:
+
+```powershell
+matchguard analyze examples/events/sample_match.jsonl
+```
+
 ## Use a scoring profile
 
 ```powershell
@@ -30,3 +36,5 @@ python -m matchguard.cli export-cases examples/events/sample_match.jsonl --min-s
 Cases include stable IDs, severity, summaries, recommended actions, and evidence timelines.
 
 The CLI prints JSON so it can be saved by CI jobs, attached to moderation reports, or forwarded into a dashboard prototype.
+
+Invalid JSONL rows, missing required event fields, missing files, and invalid scoring config files return a non-zero exit code with a concise `matchguard: error:` message on stderr.

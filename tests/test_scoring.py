@@ -1,5 +1,6 @@
 import unittest
 
+import path_setup  # noqa: F401
 from matchguard.config import ScoringConfig
 from matchguard.models import MatchEvent
 from matchguard.scoring import RiskScorer, analyze_events
@@ -105,6 +106,13 @@ class ScoringTests(unittest.TestCase):
 
         self.assertEqual(default_reports, [])
         self.assertEqual(strict_reports[0].reasons, ["abnormal_movement_speed"])
+
+    def test_config_rejects_invalid_thresholds(self):
+        with self.assertRaisesRegex(ValueError, "abnormal_hit_rate must be between 0 and 1"):
+            ScoringConfig.from_dict({"abnormal_hit_rate": 1.5})
+
+        with self.assertRaisesRegex(ValueError, "hidden_hit_count must be a positive integer"):
+            ScoringConfig.from_dict({"hidden_hit_count": 0})
 
 
 if __name__ == "__main__":

@@ -1,5 +1,6 @@
 import unittest
 
+import path_setup  # noqa: F401
 from matchguard.cases import build_moderation_case
 from matchguard.models import Evidence, RiskReport
 
