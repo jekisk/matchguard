@@ -14,7 +14,7 @@
 - Configurable scoring profiles per game mode.
 - Discord webhook integration.
 - Additional sample scoring profiles.
-- CLI output options for saved reports.
+- CLI output options for saved reports and summaries.
 - Unreal Engine example.
 
 ## v0.3

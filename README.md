@@ -25,10 +25,12 @@ This repository is an early MVP. It includes:
 
 - a Python scoring engine;
 - a JSONL command-line analyzer;
+- a compact risk summary command for CI and moderator handoff;
 - an optional FastAPI server adapter;
+- configurable scoring profiles;
 - an example Unity client script;
 - a sample match event dataset;
-- docs for architecture, privacy, roadmap, and OSS application positioning.
+- docs for architecture, privacy, roadmap, and CLI usage.
 
 ## Quick start
 
@@ -51,12 +53,32 @@ Export moderation cases:
 python -m matchguard.cli export-cases examples/events/sample_match.jsonl --min-score 50
 ```
 
+Summarize a dataset for a quick moderator handoff:
+
+```powershell
+python -m matchguard.cli summarize examples/events/sample_match.jsonl --min-score 50
+```
+
 Or install in editable mode:
 
 ```powershell
 python -m pip install -e .
 matchguard analyze examples/events/sample_match.jsonl
 ```
+
+## What it does today
+
+MatchGuard turns raw match telemetry into reviewable moderation signals:
+
+- scores players by match using explainable rule weights;
+- highlights the strongest reasons behind each risk score;
+- exports stable moderation cases with severity and evidence timelines;
+- summarizes a whole JSONL file by event count, flagged players, actions, top reasons, and highest-risk players;
+- lets each game tune thresholds with a small JSON config.
+
+## Moderator workflow
+
+Use `summarize` first to see whether a match export needs review. Use `analyze` when you need full per-player evidence. Use `export-cases` when a moderator needs stable case IDs, severity labels, concise summaries, and ordered timelines that can be attached to an internal ticket or dashboard.
 
 ## Development
 
@@ -136,12 +158,6 @@ See [docs/roadmap.md](docs/roadmap.md).
 ## CLI usage
 
 See [docs/cli.md](docs/cli.md).
-
-## OpenAI Codex for OSS
-
-This project is structured to be a useful OSS candidate: it has a clear maintainer workflow, tests, examples, documentation, and a realistic path for AI-assisted maintenance.
-
-See [docs/codex-for-oss-application.md](docs/codex-for-oss-application.md) for draft application text.
 
 ## License
 

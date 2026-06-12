@@ -35,6 +35,14 @@ python -m matchguard.cli export-cases examples/events/sample_match.jsonl --min-s
 
 Cases include stable IDs, severity, summaries, recommended actions, and evidence timelines.
 
+## Summarize a dataset
+
+```powershell
+python -m matchguard.cli summarize examples/events/sample_match.jsonl --min-score 50
+```
+
+The summary output includes event count, match count, player count, flagged player count, action counts, top reasons, and the highest-risk players. It is designed for CI jobs, nightly telemetry checks, and quick moderator handoffs.
+
 The CLI prints JSON so it can be saved by CI jobs, attached to moderation reports, or forwarded into a dashboard prototype.
 
 Invalid JSONL rows, missing required event fields, missing files, and invalid scoring config files return a non-zero exit code with a concise `matchguard: error:` message on stderr.

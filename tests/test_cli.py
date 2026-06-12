@@ -68,6 +68,45 @@ class CliTests(unittest.TestCase):
         self.assertEqual(payload["cases"][0]["severity"], "low")
         self.assertTrue(payload["cases"][0]["case_id"].startswith("case_"))
 
+    def test_summarize_prints_dataset_overview(self):
+        events_path = self._write_jsonl(
+            [
+                {
+                    "match_id": "m1",
+                    "player_id": "p1",
+                    "type": "movement",
+                    "ts": 1.0,
+                    "position": {"x": 0, "y": 0, "z": 0},
+                },
+                {
+                    "match_id": "m1",
+                    "player_id": "p1",
+                    "type": "movement",
+                    "ts": 1.1,
+                    "position": {"x": 100, "y": 0, "z": 0},
+                },
+                {
+                    "match_id": "m1",
+                    "player_id": "p2",
+                    "type": "movement",
+                    "ts": 1.0,
+                    "position": {"x": 0, "y": 0, "z": 0},
+                },
+            ]
+        )
+
+        stdout = io.StringIO()
+        with redirect_stdout(stdout):
+            exit_code = main(["summarize", str(events_path)])
+
+        payload = json.loads(stdout.getvalue())
+        summary = payload["summary"]
+        self.assertEqual(exit_code, 0)
+        self.assertEqual(summary["events"], 3)
+        self.assertEqual(summary["players"], 2)
+        self.assertEqual(summary["flagged_players"], 1)
+        self.assertEqual(summary["top_reasons"][0]["reason"], "abnormal_movement_speed")
+
     def test_invalid_event_returns_clean_error(self):
         events_path = self._write_text('{"match_id": "m1", "player_id": "p1"}\n')
 
